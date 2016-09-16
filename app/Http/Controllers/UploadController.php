@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Comodojo\Zip\Zip;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -28,13 +29,19 @@ class UploadController extends Controller
 
         $zip = Zip::create($tmpDir . '.zip');
         $zip->add($tmpDir);
+        $zipName = $zip->getZipFile();
         $zip->close();
 
-        if (PHP_OS === 'WINNT')
-            exec("rd /s /q $tmpDir");
-        else
-            exec("rm -rf $tmpDir");
+        $zipContent = file_get_contents($_SERVER['DOCUMENT_ROOT'] . '\\' . $zip->getZipFile());
 
-        return response()->download($_SERVER['DOCUMENT_ROOT'] . '\\' . $zip->getZipFile());
+        if (PHP_OS === 'WINNT'){
+            exec("rd /s /q $tmpDir");
+            exec("del $zipName");
+        }else {
+            exec("rm -rf $tmpDir");
+            exec("rm -rgf $zipName");
+        }
+        
+        return response($zipContent)->header('Content-Type', 'application/gzip')->header('Content-Disposition', 'attachment; filename=phpclasses.zip');
     }
 }
