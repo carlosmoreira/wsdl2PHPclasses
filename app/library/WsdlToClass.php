@@ -50,6 +50,7 @@ class WsdlToClass
     }
 
     /**
+     * Take the wsdl file passed in and generate the class. Then zip up all files and return file contents
      * @return mixed
      * @throws \Comodojo\Exception\ZipException
      */

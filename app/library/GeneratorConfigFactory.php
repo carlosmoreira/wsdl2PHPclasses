@@ -14,6 +14,11 @@ use Mockery\CountValidator\Exception;
 
 class GeneratorConfigFactory
 {
+    /**
+     * @param array $data
+     * @param null $tmpDir
+     * @return Config
+     */
     public static function generateConfig(array $data, $tmpDir = null)
     {
 
